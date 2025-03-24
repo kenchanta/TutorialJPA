@@ -22,16 +22,12 @@ public class CountryController {
     // ----- 一覧画面 -----　
     @GetMapping("/list")
     public String getList(Model model) {
-        // 全件検索結果をModelに登録
         model.addAttribute("countrylist", service.getCountryList());
-        // country/list.htmlに画面遷移
         return "country/list";
     }
 
-    // ----- 追加:ここから -----
-
     // ----- 詳細画面（「新規登録」と「更新」） -----
-    @GetMapping(value= {"/detail", "/detail/{code}/"})
+    @GetMapping(value= {"/detail", "/detail/{code}"})
     //detail にアクセスした場合、通常、ブラウザがそのURLにアクセスするために GETリクエスト を送信します。このため、Springコントローラーで定義された @GetMapping("/detail") メソッドが最初に呼び出されます。
     //→その後、例えば詳細情報を更新するためにフォームを送信すると、フォームの action="/country/detail" から POSTリクエスト が送信されます。この時、@PostMapping("/detail") が呼ばれ、フォームデータがサーバーに送信され、処理が行われます。
     public String getCountry(@PathVariable(name="code", required=false) String code, Model model) {
@@ -49,19 +45,17 @@ public class CountryController {
     }
 
     // ----- 削除画面 -----
-    @GetMapping("/delete")
-    public String deleteCountryForm(Model model) {
-        // country/delete.htmlに画面遷移
+    @GetMapping(value={"/delete", "/delete/{code}"})
+    public String deleteCountryForm(@PathVariable(name="code", required=false) String code, Model model) {
         return "country/delete";
     }
 
-    // ----- 削除 -----
+
     @PostMapping("/delete")
     //下記の("code")はcodeという名前のクエリパラメータかフォームパラメータを受け取るという意味。例えば<input type="text" name="code" th:value="${code}">のname=code の部分。
     public String deleteCountry(@RequestParam("code") String code, Model model) {
         service.deleteCountry(code);
         return "redirect:/country/list";
     }
-    // ----- 追加:ここまで -----
 
 }
